@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BioChain Canonical Model Parameters (2026)",
+  "version": "1.0.0",
+  "lastUpdated": "2026-11-19",
+  "descricao": "Tabela canônica de parâmetros da Tecnodemocracia Biocêntrica BioChain para cálculo de RBE, ativos GAIA, VPL e consenso PoE (Proposta A1).",
+  "parameters": {
+    "SM_2026": {
+      "valor": 1621.00,
+      "unidade": "BRL/mês",
+      "descricao": "Salário Mínimo Nacional de Referência para 2026",
+      "fonte": "LDO / PLOA 2026 (Governo Federal do Brasil)",
+      "data": "2026-01-01",
+      "intervalo": [1500.00, 1800.00],
+      "categoria": "NORMATIVO"
+    },
+    "PISO_RBE": {
+      "valor": 810.50,
+      "unidade": "BRL/mês/família",
+      "descricao": "Piso Social Incondicional da RBE (50% do Salário Mínimo 2026)",
+      "fonte": "Anteprojeto de Lei BioChain (Art. 14, § 1º)",
+      "data": "2026-01-01",
+      "intervalo": [600.00, 1000.00],
+      "categoria": "PROPOSTA"
+    },
+    "PSA_HA_MES": {
+      "valor": 12.50,
+      "unidade": "BRL/ha·mês",
+      "descricao": "Valor base de Pagamento por Serviços Ambientais por hectare sob custódia",
+      "fonte": "Lei Federal nº 14.119/2021 (Política Nacional de PSA)",
+      "data": "2021-01-13",
+      "intervalo": [8.00, 25.00],
+      "categoria": "NORMATIVO"
+    },
+    "CO2_MERCADO_T": {
+      "valor": 47.00,
+      "unidade": "BRL/tCO2e",
+      "descricao": "Preço médio de mercado voluntário da tonelada de CO2e florestal",
+      "fonte": "Índice de Carbono Voluntário Brasil 2025/2026",
+      "data": "2026-01-01",
+      "intervalo": [30.00, 85.00],
+      "categoria": "ESTIMADO"
+    },
+    "GAIA_BRL": {
+      "valor": 6.00,
+      "unidade": "BRL/token",
+      "descricao": "Preço paramétrico de liquidação primária do token GAIA na emissão",
+      "fonte": "Valoração paramétrica primária da BioChain",
+      "data": "2026-01-01",
+      "intervalo": [4.00, 15.00],
+      "categoria": "SIMULADO"
+    },
+    "IIE_THRESHOLD_SUSPEND": {
+      "valor": 0.60,
+      "unidade": "adimensional [0.0 - 1.0]",
+      "descricao": "Limiar mínimo de integridade ecológica para congelamento protocolar (Disjuntor Biocêntrico)",
+      "fonte": "Protocolo BioChain de Resiliência Biocêntrica (Art. 18)",
+      "data": "2026-01-01",
+      "intervalo": [0.50, 0.75],
+      "categoria": "NORMATIVO"
+    },
+    "LEAKAGE_FACTOR": {
+      "valor": 0.30,
+      "unidade": "fator de vazamento residual [0.0 - 1.0]",
+      "descricao": "Desconto de vazamento de desmatamento contrafactual residual",
+      "fonte": "West et al., PNAS (2020) / Metodologias REDD+ Jurisdicional",
+      "data": "2020-09-08",
+      "intervalo": [0.15, 0.45],
+      "categoria": "ESTIMADO"
+    },
+    "TAXA_DESCONTO_SOCIAL": {
+      "valor": 0.065,
+      "unidade": "taxa anual [a.a.]",
+      "descricao": "Taxa de desconto social para análise de custo-benefício de políticas públicas",
+      "fonte": "Diretrizes de Avaliação de Políticas Públicas (IPEA / STN)",
+      "data": "2024-05-15",
+      "intervalo": [0.04, 0.08],
+      "categoria": "ESTIMADO"
+    },
+    "CO2_HA_ANO_BIOMA": {
+      "valor": {
+        "Amazônia": 3.80,
+        "Cerrado": 2.10,
+        "Mata Atlântica": 3.20,
+        "Pantanal": 2.80,
+        "Caatinga": 1.50,
+        "Pampa": 1.20,
+        "Zona Costeira e Marinha": 4.10
+      },
+      "unidade": "tCO2e/ha·ano",
+      "descricao": "Taxa média de sequestro anual de carbono por bioma brasileiro",
+      "fonte": "INPE / MCTI 4ª Comunicação Nacional do Brasil à UNFCCC",
+      "data": "2023-12-01",
+      "categoria": "OBSERVADO"
+    },
+    "Y0_BIOMA": {
+      "valor": {
+        "Amazônia": 0.018,
+        "Cerrado": 0.021,
+        "Mata Atlântica": 0.009,
+        "Pantanal": 0.014,
+        "Caatinga": 0.016,
+        "Pampa": 0.012,
+        "Zona Costeira e Marinha": 0.010
+      },
+      "unidade": "taxa anual de desmate histórico [% a.a.]",
+      "descricao": "Linha de base de desmatamento contrafactual histórico por bioma",
+      "fonte": "INPE PRODES (Média Decenal 2014-2024)",
+      "data": "2025-01-10",
+      "categoria": "OBSERVADO"
+    },
+    "BIOME_STRESS_FACTORS": {
+      "valor": {
+        "Amazônia": 1.20,
+        "Cerrado": 1.25,
+        "Mata Atlântica": 1.40,
+        "Pantanal": 1.35,
+        "Caatinga": 1.30,
+        "Pampa": 1.15,
+        "Zona Costeira e Marinha": 1.25
+      },
+      "unidade": "multiplicador adimensional (Ω_bioma)",
+      "descricao": "Fator de estresse ecológico e prioridade de conservação por bioma",
+      "fonte": "Modelagem Ecossistêmica BioChain (White Paper Técnico)",
+      "data": "2026-01-01",
+      "categoria": "NORMATIVO"
+    }
+  }
+}

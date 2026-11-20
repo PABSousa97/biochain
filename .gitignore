@@ -1,0 +1,4 @@
+audit_doc.txt
+*.log
+.DS_Store
+node_modules/

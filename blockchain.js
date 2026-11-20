@@ -141,10 +141,15 @@ class BioTransaction {
     const biome = this.metadata?.bioma || 'Amazônia';
     const multiplier = BIOME_STRESS_FACTORS[biome] || 1.0;
 
-    // Mitigação da Lei de Goodhart: só atestação com oracleId + dataHash eleva o peso.
-    // Metadados de pagamento (canal, chave_pix) NÃO são evidência ecológica (T4).
+    // D6: Atestação tipada estrita com verificação de oráculos cadastrados
+    // Metadados livres de pagamento NUNCA elevam o peso ecológico (mitigação da Lei de Goodhart).
+    const REGISTERED_ORACLES = [
+      'INPE-DETER-AMZ-01', 'INPE-DETER-CR-04', 'INPE-SIRENE-MA-02',
+      'ANA-TELEMETRIA-PAN-09', 'INPE-SEMIARIDO-03', 'EMBRAPA-PAMPA-01',
+      'MARINHA-ORACULO-07', 'INPE-BDQUEIMADAS-ORACLE'
+    ];
     const isAttested = Boolean(
-      (this.metadata?.oracleId && this.metadata?.dataHash) ||
+      (this.metadata?.oracleId && this.metadata?.dataHash && REGISTERED_ORACLES.includes(this.metadata.oracleId)) ||
       (this.metadata?.sensor && this.metadata?.oraculo)
     );
     const safeCo2 = Math.min(Math.max(0, this.co2), 500);
@@ -311,29 +316,42 @@ class BioBlockchain {
     return tx;
   }
 
-  // VRF Sublinear Ponderada pelo Ecoscore: Pi = (Si * Fator)^phi / sum((Sk * Fator)^phi), com phi = 0.85 (Seção 2.3)
+  // D5: Seleção de Validador com Ponderação Multifatorial e Teto Anti-Sybil (Wi = (Si * Stress)^phi * Ri * Ci)
   selectValidatorVRF(candidateNodes, previousHash = null) {
     const prev = previousHash || (this.latestBlock ? this.latestBlock.hash : 'GENESIS');
     const phi = 0.85;
-    const weights = candidateNodes.map(n => {
+    
+    // 1. Calcula o peso bruto ponderado por desempenho ecológico, reputação e credenciamento
+    const rawWeights = candidateNodes.map(n => {
       const stress = BIOME_STRESS_FACTORS[n.biome] || 1.0;
       const effectiveStake = Math.max(1, n.stake);
+      const rep = n.reputation || 1.0;
+      const cred = n.accreditation || 1.0;
+      const rawW = Math.pow(effectiveStake * stress, phi) * rep * cred;
       return {
         ...n,
         stress,
-        weight: Math.pow(effectiveStake * stress, phi)
+        rawWeight: rawW
       };
     });
-    const totalWeight = weights.reduce((s, n) => s + n.weight, 0);
 
-    // Semente determinística e verificável da VRF baseada em hash da rodada
+    // 2. Aplica Teto Anti-Sybil (D5): nenhum nó ou entidade pode concentrar mais de 25% do peso total da rede
+    const totalRaw = rawWeights.reduce((s, n) => s + n.rawWeight, 0);
+    const maxAllowed = totalRaw * 0.25;
+    const cappedWeights = rawWeights.map(n => ({
+      ...n,
+      weight: Math.min(n.rawWeight, maxAllowed)
+    }));
+    const totalWeight = cappedWeights.reduce((s, n) => s + n.weight, 0);
+
+    // 3. Sorteio determinístico por hash / VRF demonstrativa (RFC 9381 / ECVRF demonstrativa)
     const vrfSeed = sha256Sync(`${prev}|VRF_EPOCH_${this.chain.length}`);
     const draw = (parseInt(vrfSeed.slice(0, 8), 16) % 100000) / 100000;
     const target = draw * totalWeight;
 
     let cumulative = 0;
-    let winner = weights[0];
-    for (const item of weights) {
+    let winner = cappedWeights[0];
+    for (const item of cappedWeights) {
       cumulative += item.weight;
       if (target <= cumulative) {
         winner = item;

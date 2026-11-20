@@ -1030,6 +1030,72 @@ body {
 .data-tag-est { background: rgba(167, 139, 250, 0.15); color: #a78bfa; border: 1px solid rgba(167, 139, 250, 0.35); }
 .data-tag-sim { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.35); }
 .data-tag-norm { background: rgba(52, 211, 100, 0.15); color: #34d364; border: 1px solid rgba(52, 211, 100, 0.35); }
+.data-tag-prop { background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.35); }
+
+/* VPL Cashflow Table (Item C2) */
+.vpl-table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.vpl-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  text-align: left;
+}
+.vpl-table th, .vpl-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.vpl-table th {
+  background: rgba(0,0,0,0.3);
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.vpl-table tr:last-child td { border-bottom: none; }
+.vpl-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Onboarding Comece Aqui (Item F3) */
+.onboarding-banner {
+  background: linear-gradient(90deg, rgba(16, 185, 129, 0.12), rgba(6, 78, 59, 0.25));
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.onboarding-steps {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.onboarding-step-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.onboarding-step-pill:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
 
 /* ═══════════ ACESSIBILIDADE & TECLADO ═══════════ */
 :focus-visible {

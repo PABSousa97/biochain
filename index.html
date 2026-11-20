@@ -24,7 +24,7 @@
         <div class="brand-icon">🌿</div>
         <div>
           <h1 class="brand-name">BioChain</h1>
-          <span class="brand-sub">Tecnocracia Biocêntrica · Método Brasiliano</span>
+          <span class="brand-sub">Tecnodemocracia Biocêntrica · Método Brasiliano</span>
         </div>
       </div>
       <div class="header-stats">
@@ -53,6 +53,7 @@
           </div>
           <span style="font-size: 11px; opacity: 0.6;">▼</span>
         </button>
+        <a href="verify.html" target="_blank" class="btn btn-ghost btn-sm" title="Auditoria Criptográfica Independente (D14)" style="padding: 6px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border); color: var(--teal); text-decoration: none;">🔍 Auditar</a>
         <button type="button" class="btn btn-ghost btn-sm" onclick="openGlossaryModal()" title="Abrir glossário de conceitos e fórmulas da BioChain" aria-haspopup="dialog" style="padding: 6px 12px; border-radius: 20px; font-size: 12px; border: 1px solid var(--border);">
           📖 Glossário
         </button>
@@ -105,6 +106,23 @@
   <!-- ═══════════════════ TAB: MODELO CAUSAL INTEGRADO ═══════════════════ -->
   <div id="tab-causal" class="tab-content active" role="tabpanel" aria-labelledby="btn-tab-causal" tabindex="0">
     <section class="biomes-section">
+      <!-- Onboarding Guiado (F3) -->
+      <div class="onboarding-banner" role="region" aria-label="Guia Rápido de Onboarding">
+        <div>
+          <div style="font-weight: 800; font-size: 14px; color: var(--green); display: flex; align-items: center; gap: 8px;">
+            <span>🚀</span> Comece Aqui: O Circuito BioChain em 4 Etapas
+          </div>
+          <div style="font-size: 12px; color: var(--text2); margin-top: 4px;">
+            Experimente o fluxo: da mensuração territorial à liquidação garantida em consenso distribuído.
+          </div>
+        </div>
+        <div class="onboarding-steps">
+          <div class="onboarding-step-pill" onclick="switchTab('rbe')"><b>1.</b> Simule a RBE ➔</div>
+          <div class="onboarding-step-pill" onclick="switchTab('dlt')"><b>2.</b> Emita na Mempool ➔</div>
+          <div class="onboarding-step-pill" onclick="switchTab('dlt'); setTimeout(mineBlock, 300);"><b>3.</b> Valide o Bloco (PoE) ➔</div>
+          <a href="verify.html" target="_blank" class="onboarding-step-pill" style="text-decoration:none; color:var(--teal);"><b>4.</b> Audite no Verify.html ↗</a>
+        </div>
+      </div>
       <div class="biomes-header-box">
         <div>
           <h2 style="font-size: 22px; font-weight: 800; color: var(--green);">Modelo Causal Integrado</h2>
@@ -129,49 +147,49 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
 
           <div class="card" style="border-left: 4px solid var(--green); padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 1 · Entrada</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px;">Camada 1 · Entrada</span><span class="data-tag data-tag-obs">Observado</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Estado Biofísico</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Massa vegetal, carbono orgânico, higidez hídrica e biodiversidade mensurável como variáveis de estado ecológico (World W).</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Fonte prevista: IBGE / INPE / MapBiomas</div>
           </div>
 
           <div class="card" style="border-left: 4px solid var(--teal); padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 2 · Aquisição</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 1px;">Camada 2 · Aquisição</span><span class="data-tag data-tag-est">Estimado</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Mensuração Multimodal</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Sensoriamento INPE/CBERS, IoT terrestre, laudos comunitários e reconciliação bayesiana: P(E|D<sub>sat</sub>, D<sub>IoT</sub>, D<sub>soc</sub>).</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Fonte prevista: SERPRO / ANA / EMBRAPA</div>
           </div>
 
           <div class="card" style="border-left: 4px solid var(--gold); padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 3 · Inferência</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 1px;">Camada 3 · Inferência</span><span class="data-tag data-tag-est">Estimado</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Oráculo IA Bayesiano</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Inferência probabilística com limiar θ* ≥ 97,5% derivado da função de perda assimétrica. Rejeita laudos adulterados via slashing.</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Marco de referência: GAIA Oracle Network / SERPRO</div>
           </div>
 
           <div class="card" style="border-left: 4px solid #a78bfa; padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 4 · Consenso</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: #a78bfa; text-transform: uppercase; letter-spacing: 1px;">Camada 4 · Consenso</span><span class="data-tag data-tag-norm">Implementado</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Proof-of-Ecology (PoE)</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Seleção de validadores via VRF sublinear ponderada pelo Ecoscore: P<sub>i</sub> = S<sub>i</sub><sup>ϕ</sup> / Σ S<sub>k</sub><sup>ϕ</sup>, com ϕ = 0,85 e mitigação de Sybil via credenciamento institucional federado.</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Marco de referência: BioBFT / EcoSort Protocol</div>
           </div>
 
           <div class="card" style="border-left: 4px solid #fb923c; padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: #fb923c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 5 · Ativo</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: #fb923c; text-transform: uppercase; letter-spacing: 1px;">Camada 5 · Ativo</span><span class="data-tag data-tag-norm">Implementado</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Ativo GAIA</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">GAIA = f(Carbono, Biodiversidade, Água, Solo, Território, Custódia). Máquina de estados: Pendente → Ativo → Suspenso → Aposentado.</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Marco legal: Lei Federal nº 14.119/2021</div>
           </div>
 
           <div class="card" style="border-left: 4px solid var(--green); padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 6 · Redistribuição</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 1px;">Camada 6 · Redistribuição</span><span class="data-tag data-tag-prop">Proposta</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Renda Básica Ecológica</div>
-            <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">RBE = R$ 810,50 (piso legal) + (ha × Ω<sub>bioma</sub> × IIE) / Famílias. Repasse direto via Pix/Caixa (Fase 1) e Drex Real Digital (Fase 2). Zero intermediários.</div>
+            <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">RBE = 0,5·SM (R$ 810,50) + (h·π·Ω·IIE·E) / N. Repasse auditável via Pix/Caixa (Fase 1) e Drex (Fase 2). Governança multipartidária sem monopólio de validação.</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">Marco institucional: STN / Banco Central do Brasil</div>
           </div>
 
           <div class="card" style="border-left: 4px solid var(--teal); padding: 20px;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Camada 7 · Resultado</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;"><span style="font-size: 11px; font-weight: 700; color: var(--teal); text-transform: uppercase; letter-spacing: 1px;">Camada 7 · Resultado</span><span class="data-tag data-tag-est">Modelagem</span></div>
             <div style="font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 6px;">Conservação Verificável</div>
             <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Adicionalidade contrafactual: Y1 − Y0 mensura retenção florestal real vs. linha de base. Fecha o ciclo: Custódia → Natureza → Custódia.</div>
             <div style="margin-top: 12px; font-size: 11px; color: var(--text3);">INPE-DETER / MapBiomas Alert</div>
@@ -199,7 +217,7 @@
             <span style="color: var(--text3);">→</span>
             <span style="background: rgba(52,211,100,0.15); color: var(--green); padding: 6px 12px; border-radius: 8px; font-weight: 700;">🌿 Custódia</span>
           </div>
-          <p style="font-size: 12px; color: var(--text3); margin-top: 12px;">Cada seta representa uma transformação verificada criptograficamente e registrada de forma imutável no livro-razão público da BioChain.</p>
+          <p style="font-size: 12px; color: var(--text3); margin-top: 12px;">Cada seta representa uma transformação com verificação algorítmica e registro auditável (tamper-evident) no livro-razão público da BioChain.</p>
         </div>
 
         <!-- Nota Epistemológica -->
@@ -277,7 +295,7 @@
           </div>
 
           <div style="background: var(--bg2); padding: 14px; border-radius: var(--radius-sm); font-size: 12px; color: var(--text2); line-height: 1.5;">
-            💡 <b>Fórmula Legal:</b> R$ 810,50 (piso legal: 50% SM 2026) + (Hectares × Fator Bioma × IIE) dividido equitativamente pelas famílias guardiãs homologadas.
+            💡 <b>Fórmula do Anteprojeto (Art. 14):</b> <code>RBE = 0,5·SM + (h·π·Ω·IIE·E) / N</code>, onde <b>0,5·SM = R$ 810,50</b> (piso social incondicional proposto), <b>π = R$ 12,50/ha·mês</b> (PSA Lei 14.119/2021), <b>Ω</b> é o fator de estresse do bioma, <b>IIE</b> a integridade auditada e <b>E = 1,0</b> a elegibilidade territorial. <span style="display:block;margin-top:6px;font-size:11px;color:var(--text3);">Teto prudencial distributivo: R$ 2.500,00/família·mês de PSA (Art. 14, § 3º) para evitar assimetrias concentradoras.</span>
           </div>
         </div>
 
@@ -632,6 +650,8 @@
             <button class="btn btn-ghost btn-sm" onclick="validateChain()">✅ Validar Cadeia</button>
             <button class="btn btn-ghost btn-sm" onclick="resetChain()" title="Restaurar cadeia ao bloco gênesis demonstrativo">🔄 Reiniciar</button>
             <button class="btn btn-ghost btn-sm" onclick="exportChain()">📥 Exportar JSON</button>
+            <button class="btn btn-secondary btn-sm" onclick="importChain()">📤 Importar JSON</button>
+            <a href="verify.html" target="_blank" class="btn btn-ghost btn-sm" style="border: 1px solid var(--border); text-decoration: none; color: var(--teal);">🔍 Auditar no Verify.html</a>
             <button class="btn btn-danger btn-sm" onclick="simulateTamper()">⚠️ Simular Ataque</button>
           </div>
         </div>
@@ -829,13 +849,13 @@
         <div class="narc-box biocentric">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
             <span style="font-size: 24px;">🌿</span>
-            <h3 style="color: var(--green); font-size: 18px;">Tecnocracia Biocêntrica (BioChain)</h3>
+            <h3 style="color: var(--green); font-size: 18px;">Tecnodemocracia Biocêntrica (BioChain)</h3>
           </div>
           <ul style="list-style: none; font-size: 13px; color: var(--text2); line-height: 1.8;">
             <li>✅ <b>Fluxo Perpétuo de Caixa:</b> Emissão contínua de GAIA e créditos de biodiversidade todo ano.</li>
-            <li>✅ <b>Renda Básica Direta:</b> R$ 810,50 a R$ 1.800/mês (piso legal indexado a 50% do salário mínimo + parcela territorial PSA).</li>
+            <li>✅ <b>Renda Básica Direta:</b> R$ 810,50 a R$ 2.500/mês (piso social proposto de 50% do salário mínimo 2026 + parcela territorial PSA).</li>
             <li>✅ <b>Colateralização Financeira:</b> Ativos GAIA auditáveis servem de garantia em empréstimos verdes no SFN.</li>
-            <li>✅ <b>Soberania e Reconhecimento:</b> O Brasil como polo regulador da nova moeda ecológica global.</li>
+            <li>✅ <b>Soberania e Reconhecimento:</b> O Brasil como polo regulador de ativos ambientais auditáveis e rastreáveis internacionalmente.</li>
           </ul>
           <div style="background: rgba(52, 211, 100, 0.1); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px; font-size: 12px; color: #86efac;">
             <b>VPL em 10 Anos:</b> R$ 14.800 / ha (Taxa de desconto social r = 6,5% a.a.; fluxo contínuo PSA R$ 12,50/ha·mês + créditos GAIA e RBE).
@@ -848,7 +868,7 @@
         <h3 style="color: var(--teal); font-size: 16px; margin-bottom: 8px;">Conclusão da Modelagem de Teoria dos Jogos & Equilíbrio de Nash</h3>
         <p style="font-size: 13px; color: var(--text); line-height: 1.6;">
           Quando a renda contínua da BioChain somada à Renda Básica Ecológica e às sanções da Lei de Crimes Ambientais supera o retorno da madeira predatória no <b>modelo estocástico de payoffs</b>, 
-          <b>a preservação torna-se a estratégia racional ótima</b> para proprietários rurais e comunidades tradicionais. O narcisídio social deixa de ser viável não apenas por apelo ético, mas por pura racionalidade econômica de longo prazo (fluxo de caixa descontado ajustado aos riscos climáticos).
+          <b>a preservação torna-se a estratégia preferível sob as premissas deste modelo econômico</b> para proprietários rurais e comunidades tradicionais. O narcisídio social é dissuadido pela alteração estrutural da matriz de payoffs intertemporais.
         </p>
         <div style="margin-top: 14px; padding: 12px; border-left: 3px solid var(--gold); background: rgba(251,191,36,0.06); font-size: 12px; color: var(--text2); line-height: 1.5;">
           <b>⚠️ Ressalva de Política Pública e Hipóteses H4–H5:</b> A dominância econômica da custódia florestal pressupõe o enforcement ativo de comando e controle do Estado contra a grilagem e a ocupação ilegal de terras públicas (Art. 225 da CF/88). Na ausência de fiscalização punitiva, a apropriação predatória ilícita pode criar distorções oportunistas de curto prazo que nenhum mecanismo puramente de mercado consegue mitigar sozinho.
@@ -871,7 +891,67 @@
           <span>🐙</span> Ver Acervo no GitHub
         </a>
       
-      <p style="font-size: 11.5px; color: var(--text3); margin: 12px 0 20px 0; line-height: 1.5;">
+      
+      <!-- Tabela de Memória de Cálculo VPL em 10 Anos (Item C2) -->
+      <div class="card" style="background: var(--surface2); border: 1px solid var(--border); padding: 20px; margin-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+          <h3 style="font-size: 15px; font-weight: 700; color: var(--green);">Memória de Cálculo: Fluxo de Caixa Anual Descontado por Hectare (10 Anos) <span class="data-tag data-tag-sim">Simulado</span></h3>
+          <span style="font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace;">Taxa de Desconto Social r = 6,5% a.a. (IPEA)</span>
+        </div>
+        <div class="vpl-table-container">
+          <table class="vpl-table">
+            <thead>
+              <tr>
+                <th>Período</th>
+                <th>Cenário Predatório: Evento / Fluxo</th>
+                <th>Fluxo Líq. (R$/ha)</th>
+                <th>Cenário Tecnodemocracia BioChain: Evento / Fluxo</th>
+                <th>Fluxo Líq. (R$/ha)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><b>Ano 0</b></td>
+                <td>Corte raso da madeira (+R$ 1.800) − Preparo do solo (-R$ 400)</td>
+                <td style="color:#fca5a5;">+R$ 1.400</td>
+                <td>Cadastramento territorial, vistoria oracular e homologação</td>
+                <td style="color:#86efac;">-R$ 150</td>
+              </tr>
+              <tr>
+                <td><b>Anos 1–3</b></td>
+                <td>Pasto extensivo inicial (0,5 UA/ha), receita líquida da pecuária</td>
+                <td style="color:#fca5a5;">+R$ 350/ano</td>
+                <td>PSA Florestal (R$ 150) + Créditos Carbono/GAIA (R$ 150) + Repasse RBE − Monitoramento (-R$ 30)</td>
+                <td style="color:#86efac;">+R$ 1.870/ano</td>
+              </tr>
+              <tr>
+                <td><b>Anos 4–6</b></td>
+                <td>Erosão e perda de fertilidade do solo, receita líquida cai</td>
+                <td style="color:#fca5a5;">+R$ 180/ano</td>
+                <td>Fluxo contínuo estabilizado com índice de integridade ecológica IIE &gt; 90%</td>
+                <td style="color:#86efac;">+R$ 1.870/ano</td>
+              </tr>
+              <tr>
+                <td><b>Anos 7–10</b></td>
+                <td>Degradação severa do solo + risco ponderado de embargo/multa IBAMA (-R$ 100)</td>
+                <td style="color:#fca5a5;">+R$ 50/ano</td>
+                <td>Custódia perpétua consolidada, colateralização verde e valorização de ativos</td>
+                <td style="color:#86efac;">+R$ 1.870/ano</td>
+              </tr>
+              <tr style="background: rgba(255,255,255,0.05); font-weight: 700;">
+                <td><b>VPL (r=6,5%)</b></td>
+                <td colspan="2" style="color: var(--red);">VPL em 10 Anos: R$ 2.450 / ha (Exaustivo / Degradação)</td>
+                <td colspan="2" style="color: var(--green);">VPL em 10 Anos: R$ 14.800 / ha (Perpétuo / Regenerativo)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top: 14px; padding: 12px; border-left: 3px solid var(--teal); background: rgba(45,212,191,0.06); font-size: 12px; color: var(--text2); line-height: 1.5;">
+          <b>Modelo Estratégico de Dissuasão & Enforcement (C3):</b> O limiar de dissuasão do desmatamento ilegal é dado por <code>p* = (VP_desmate − VP_custódia) / S</code>, onde <code>p</code> é a probabilidade de autuação e <code>S</code> a sanção financeira/confisco. Como a BioChain eleva <code>VP_custódia</code> de R$ 2.450 para R$ 14.800/ha, a condição <code>VP_custódia &gt; VP_desmate</code> torna a preservação economicamente dominante mesmo sob fiscalização moderada, reduzindo a sobrecarga fiscal do aparato repressivo estatal.
+        </div>
+      </div>
+
+<p style="font-size: 11.5px; color: var(--text3); margin: 12px 0 20px 0; line-height: 1.5;">
         <b>Nota Metodológica & Formulação do VPL <span class="data-tag data-tag-sim">Simulado</span> (§6):</b> <code>VPL_j = -I_{0,j} + \sum_{t=1}^T \frac{FC_{j,t}}{(1+r)^t}</code>. A comparação considera taxa de desconto social r = 6,5% a.a., custos de transação, monitoramento e dedução de riscos de reversão. Projeções de simulação computacional não configuram comprovação causal empírica definitiva.
       </p>
 </div>
@@ -1124,7 +1204,8 @@
           • <b style="color:#38bdf8">[OBSERVADO]</b>: dado primário de sensoriamento ou base oficial (INPE, PRODES, BDQueimadas).<br/>
           • <b style="color:#a78bfa">[ESTIMADO]</b>: resultado de inferência estatística ou reconciliação bayesiana multimodal.<br/>
           • <b style="color:#fbbf24">[SIMULADO]</b>: modelo prospectivo hipotético (VPL, Red Team, testes de estresse).<br/>
-          • <b style="color:#34d364">[NORMATIVO]</b>: parâmetro de diretriz legal e regulatória (piso RBE R$ 600,00, Lei 14.119/2021).</div>
+          • <b style="color:#34d364">[NORMATIVO]</b>: parâmetro de diretriz legal e regulatória vigente (Lei 14.119/2021).<br/>
+          • <b style="color:#f472b6">[PROPOSTA]</b>: proposição normativa formulada no Anteprojeto de Lei da BioChain (piso R$ 810,50, Art. 14).</div>
         </div>
         <div class="glossary-item">
           <div class="glossary-term">⚡ Proof-of-Ecology (PoE)</div>
@@ -1136,7 +1217,7 @@
         </div>
         <div class="glossary-item">
           <div class="glossary-term">💚 RBE (Renda Básica Ecológica)</div>
-          <div class="glossary-desc">Remuneração mensal garantida às famílias guardiãs (Art. 14): <code>RBE_i = B_0 + (A × Ω_b × IIE × E) / N</code>, separando o piso legal da política pública (<code>B_0 = R$ 600,00</code>) do componente variável territorial de PSA. Validação estrita: <code>N > 0</code>, <code>A ≥ 0</code>, <code>IIE ∈ [0, 1]</code> (§5).</div>
+          <div class="glossary-desc">Remuneração mensal garantida às famílias guardiãs (Art. 14): <code>RBE_i = 0,5·SM + (h·π·Ω·IIE·E) / N</code>, separando o piso incondicional proposto (<code>B_0 = R$ 810,50</code>, correspondente a 50% do SM 2026 de R$ 1.621,00) do componente territorial condicionado de PSA (<code>π = R$ 12,50/ha·mês</code>). Validação estrita: <code>N > 0</code>, <code>A ≥ 0</code>, <code>IIE ∈ [0, 1]</code> (A2/A3).</div>
         </div>
         <div class="glossary-item">
           <div class="glossary-term">🎲 VRF (Verifiable Random Function)</div>

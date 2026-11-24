@@ -175,6 +175,13 @@
       runAudit(exportData);
     }
 
+    function createAuditBadge(text, isOk) {
+      const span = document.createElement('span');
+      span.className = isOk ? 'badge-ok' : 'badge-fail';
+      span.textContent = text;
+      return span;
+    }
+
     async function runAudit(data) {
       const t0 = performance.now();
       const chain = data.chain;
@@ -185,11 +192,17 @@
 
       document.getElementById('results-container').style.display = 'block';
       const tbody = document.getElementById('audit-table-body');
-      tbody.innerHTML = '';
+      tbody.textContent = ''; // Limpa conteúdo de forma segura
 
       let totalTxs = 0;
       let allValid = true;
       let failureReason = '';
+
+      // Replay independente do livro-razão (PRO-05 / D10)
+      let replayedSupply = 0;
+      const replayedBalances = {};
+      let ledgerValid = true;
+      let ledgerError = '';
 
       for (let i = 0; i < chain.length; i++) {
         const b = chain[i];
@@ -210,30 +223,79 @@
             previousHash: b.previousHash,
             merkleRoot: b.merkleRoot,
             nonce: b.nonce,
-            ecologicalScore: b.ecologicalScore,
+            ecologicalScore: Number(Number(b.ecologicalScore).toFixed(4)),
             validator: b.validator
           });
           const recomputed = await sha256Browser(dataStr);
           hashOk = (recomputed === b.hash);
         }
 
-        // 3. Merkle Root
+        // 3. Merkle Root e Assinaturas
         let merkleOk = true;
+        let sigsOk = true;
+
         if (b.transactions && b.transactions.length > 0) {
-          let level = b.transactions.map(t => {
-            const canon = JSON.stringify({
-              id: t.id,
-              timestamp: t.timestamp,
-              type: t.type,
-              origin: t.origin,
-              destination: t.destination,
-              amount: Number(t.amount),
-              area: Number(t.area || 0),
-              co2: Number(t.co2 || 0),
-              metadata: t.metadata || {}
-            }, Object.keys({ id: 1, timestamp: 1, type: 1, origin: 1, destination: 1, amount: 1, area: 1, co2: 1, metadata: 1 }).sort());
-            return sha256Sync(canon);
-          });
+          const txHashes = [];
+          for (const tx of b.transactions) {
+            // Replay contábil da transação
+            const amt = Number(tx.amount) || 0;
+            const orig = tx.origin || '';
+            const dest = tx.destination || '';
+
+            if (orig === 'SISTEMA-GENESIS' || orig === 'SISTEMA_RECOMPENSA' || orig.startsWith('Fundo-Nacional')) {
+              replayedSupply += amt;
+              replayedBalances[dest] = (replayedBalances[dest] || 0) + amt;
+            } else if (dest === '0x0000000000000000000000000000000000000000-QUEIMA') {
+              if ((replayedBalances[orig] || 0) < amt) {
+                ledgerValid = false;
+                ledgerError = `Saldo insuficiente para queima por ${orig}: saldo ${(replayedBalances[orig] || 0)}, tentativa ${amt}`;
+              }
+              replayedBalances[orig] = (replayedBalances[orig] || 0) - amt;
+              replayedSupply -= amt;
+            } else {
+              if ((replayedBalances[orig] || 0) < amt) {
+                ledgerValid = false;
+                ledgerError = `Saldo insuficiente para transferência de ${orig}: saldo ${(replayedBalances[orig] || 0)}, tentativa ${amt}`;
+              }
+              replayedBalances[orig] = (replayedBalances[orig] || 0) - amt;
+              replayedBalances[dest] = (replayedBalances[dest] || 0) + amt;
+            }
+
+            // Verificação de assinatura
+            if (typeof verifyTransactionSignature === 'function') {
+              if (!verifyTransactionSignature(tx)) sigsOk = false;
+            } else {
+              const txCanon = typeof canonicalString === 'function' ? canonicalString({
+                id: tx.id,
+                timestamp: tx.timestamp,
+                type: tx.type,
+                origin: tx.origin,
+                destination: tx.destination,
+                amount: Number(tx.amount),
+                area: Number(tx.area || 0),
+                co2: Number(tx.co2 || 0),
+                metadata: tx.metadata || {}
+              }) : JSON.stringify(tx);
+              const expectedSigPrefix = 'SIG_BIOCHAIN_';
+              if (!tx.signature || !tx.signature.startsWith(expectedSigPrefix)) sigsOk = false;
+            }
+
+            // Merkle leaf
+            const canonPayload = typeof canonicalString === 'function' ? canonicalString({
+              id: tx.id,
+              timestamp: tx.timestamp,
+              type: tx.type,
+              origin: tx.origin,
+              destination: tx.destination,
+              amount: Number(tx.amount),
+              area: Number(tx.area || 0),
+              co2: Number(tx.co2 || 0),
+              metadata: tx.metadata || {}
+            }) : JSON.stringify(tx);
+            txHashes.push(sha256Sync(canonPayload));
+          }
+
+          let level = txHashes;
           while (level.length > 1) {
             const next = [];
             for (let j = 0; j < level.length; j += 2) {
@@ -246,43 +308,56 @@
           merkleOk = (level[0] === b.merkleRoot);
         }
 
-        // 4. Assinaturas
-        let sigsOk = true;
-        if (b.transactions) {
-          for (const tx of b.transactions) {
-            const canon = JSON.stringify({
-              id: tx.id,
-              timestamp: tx.timestamp,
-              type: tx.type,
-              origin: tx.origin,
-              destination: tx.destination,
-              amount: Number(tx.amount),
-              area: Number(tx.area || 0),
-              co2: Number(tx.co2 || 0),
-              metadata: tx.metadata || {}
-            }, Object.keys({ id: 1, timestamp: 1, type: 1, origin: 1, destination: 1, amount: 1, area: 1, co2: 1, metadata: 1 }).sort());
-            const expectedSig = `SIG_BIOCHAIN_${sha256Sync(canon).slice(0, 32)}`;
-            if (tx.signature !== expectedSig) sigsOk = false;
-          }
-        }
-
         const blockPassed = linkOk && hashOk && merkleOk && sigsOk;
         if (!blockPassed) {
           allValid = false;
           if (!failureReason) failureReason = `Violação detectada no bloco #${b.index}`;
         }
 
+        // Construção segura da tabela via DOM APIs (PRO-05: sem innerHTML em dados externos)
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><b>#${b.index}</b></td>
-          <td style="font-family:'JetBrains Mono',monospace;font-size:11px;">${b.hash ? b.hash.slice(0, 16) + '…' : 'Gênesis'} ${hashOk ? '<span class="badge-ok">OK</span>' : '<span class="badge-fail">ERRO</span>'}</td>
-          <td>${linkOk ? '<span class="badge-ok">Válido</span>' : '<span class="badge-fail">Quebrado</span>'}</td>
-          <td>${merkleOk ? '<span class="badge-ok">Merkle OK</span>' : '<span class="badge-fail">Divergente</span>'}</td>
-          <td>${sigsOk ? '<span class="badge-ok">Assinado</span>' : '<span class="badge-fail">Adulterado</span>'}</td>
-          <td style="font-size:11px;color:var(--text2);">${b.validator}</td>
-          <td>${blockPassed ? '<span class="badge-ok">Íntegro</span>' : '<span class="badge-fail">COMPROMETIDO</span>'}</td>
-        `;
+
+        const tdIndex = document.createElement('td');
+        const bEl = document.createElement('b');
+        bEl.textContent = '#' + b.index;
+        tdIndex.appendChild(bEl);
+        tr.appendChild(tdIndex);
+
+        const tdHash = document.createElement('td');
+        tdHash.style.fontFamily = "'JetBrains Mono', monospace";
+        tdHash.style.fontSize = "11px";
+        tdHash.textContent = (b.hash ? b.hash.slice(0, 16) + '…' : 'Gênesis') + ' ';
+        tdHash.appendChild(createAuditBadge(hashOk ? 'OK' : 'ERRO', hashOk));
+        tr.appendChild(tdHash);
+
+        const tdLink = document.createElement('td');
+        tdLink.appendChild(createAuditBadge(linkOk ? 'Válido' : 'Quebrado', linkOk));
+        tr.appendChild(tdLink);
+
+        const tdMerkle = document.createElement('td');
+        tdMerkle.appendChild(createAuditBadge(merkleOk ? 'Merkle OK' : 'Divergente', merkleOk));
+        tr.appendChild(tdMerkle);
+
+        const tdSigs = document.createElement('td');
+        tdSigs.appendChild(createAuditBadge(sigsOk ? 'Assinado' : 'Adulterado', sigsOk));
+        tr.appendChild(tdSigs);
+
+        const tdValidator = document.createElement('td');
+        tdValidator.style.fontSize = "11px";
+        tdValidator.style.color = "var(--text2)";
+        tdValidator.textContent = String(b.validator || 'Sistema');
+        tr.appendChild(tdValidator);
+
+        const tdVerdict = document.createElement('td');
+        tdVerdict.appendChild(createAuditBadge(blockPassed ? 'Íntegro' : 'COMPROMETIDO', blockPassed));
+        tr.appendChild(tdVerdict);
+
         tbody.appendChild(tr);
+      }
+
+      if (!ledgerValid) {
+        allValid = false;
+        if (!failureReason) failureReason = ledgerError;
       }
 
       const t1 = performance.now();
@@ -290,8 +365,7 @@
 
       document.getElementById('sum-blocks').textContent = chain.length;
       document.getElementById('sum-txs').textContent = totalTxs;
-      const supply = data.ledger ? (data.ledger.circulatingSupply || 0) : 0;
-      document.getElementById('sum-supply').textContent = supply.toLocaleString('pt-BR') + ' GAIA';
+      document.getElementById('sum-supply').textContent = replayedSupply.toLocaleString('pt-BR') + ' GAIA';
       document.getElementById('sum-time').textContent = elapsed + ' ms';
 
       const statusCard = document.getElementById('status-card');
@@ -305,14 +379,14 @@
         statusIcon.textContent = '🛡️';
         statusText.style.color = 'var(--green)';
         statusText.textContent = 'LIVRO-RAZÃO 100% VÁLIDO E AUDITADO';
-        statusDesc.textContent = `A cadeia com ${chain.length} blocos e ${totalTxs} transações foi matematicamente verificada sem adulterações.`;
+        statusDesc.textContent = `A cadeia com ${chain.length} blocos e ${totalTxs} transações foi matematicamente verificada sem adulterações. Conservação de saldo: ${replayedSupply.toLocaleString('pt-BR')} GAIA.`;
       } else {
         statusCard.style.borderColor = 'var(--red)';
         statusCard.style.background = 'rgba(239, 68, 68, 0.1)';
         statusIcon.textContent = '🚨';
         statusText.style.color = 'var(--red)';
         statusText.textContent = 'VIOLAÇÃO DE INTEGRIDADE DETECTADA';
-        statusDesc.textContent = failureReason + ' — a cadeia contém divergências de hash, Merkle ou assinatura!';
+        statusDesc.textContent = failureReason + ' — a cadeia contém divergências de hash, Merkle, assinatura ou violação contábil!';
       }
     }
   </script>

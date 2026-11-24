@@ -121,6 +121,20 @@ body {
   max-width: 640px; margin: 0 auto;
   color: var(--text2); font-size: 15px; line-height: 1.7;
 }
+.hero.hero-compact {
+  padding: 24px 24px 16px;
+  transition: padding 0.25s ease;
+}
+.hero.hero-compact .hero-desc {
+  display: none;
+}
+.hero.hero-compact .hero-title {
+  font-size: clamp(20px, 3.5vw, 28px);
+  margin-bottom: 6px;
+}
+.hero.hero-compact .hero-eyebrow {
+  margin-bottom: 6px;
+}
 
 /* ═══════════ LAYOUT ═══════════ */
 .main-grid {

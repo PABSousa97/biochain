@@ -223,7 +223,7 @@ const DOCS_DATA = {
         <li><b>Renda Básica Ecológica:</b> 60% da liquidação primária de ativos GAIA é destinada a famílias guardiãs (indígenas, quilombolas, ribeirinhos).</li>
         <li><b>Roadmap Escalonado:</b> Piloto inicial com 1.000 famílias em 3 biomas prioritários, expandindo para 10.000–15.000 famílias em 2027 e meta decenal de 500.000 famílias em 100M ha até 2030.</li>
       </ul>
-      <p><a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/01_politica_publica_diretriz.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
+      <p><a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/01_politica_publica_diretriz.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
     `
   },
   '02': {
@@ -237,7 +237,7 @@ const DOCS_DATA = {
         <li><b>Financiamento Sustentável:</b> 60% da receita primária de ativos GAIA combinada a fundos climáticos multilaterais e garantia soberana de última instância (Fundo Clima / Tesouro).</li>
         <li><b>Ação para os Próximos 60 Dias:</b> Decreto Presidencial criando o Grupo de Trabalho Interministerial (GTI BioChain) e autorização do piloto em 3 biomas prioritários.</li>
       </ul>
-      <p><a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/02_one_pager_executivo.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
+      <p><a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/02_one_pager_executivo.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
     `
   },
   '03': {
@@ -255,7 +255,7 @@ const DOCS_DATA = {
         <li>Renda Básica Ecológica: Repasse direto via Pix/Caixa (Fase 1) e integração com moeda digital soberana (Fase 2).</li>
         <li>Roadmap 2026–2030: Do piloto federativo à cooperação pan-amazônica na OTCA.</li>
       </ol>
-      <p><a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/03_pitch_deck_institucional.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
+      <p><a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/03_pitch_deck_institucional.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
     `
   },
   '04': {
@@ -271,7 +271,7 @@ const DOCS_DATA = {
         <li><b>Art. 13:</b> Partilha legal: 60% da liquidação primária para o Fundo da RBE.</li>
         <li><b>Art. 14:</b> Pagamento direto aos guardiões integrado ao sistema financeiro público (Pix/Caixa na Fase 1, e Drex conforme diretrizes do Bacen).</li>
       </ul>
-      <p><a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/04_anteprojeto_de_lei.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
+      <p><a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/04_anteprojeto_de_lei.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
     `
   },
   '05': {
@@ -286,13 +286,15 @@ const DOCS_DATA = {
         <li><b>Teoria dos Jogos & Hipóteses Falseáveis (H1–H5):</b> Análise paramétrica do VPL da conservação frente ao custo de oportunidade da terra e grilagem.</li>
         <li><b>Smart Contract Solidity:</b> Arquitetura do contrato de custódia e máquina de estados de ativos (Issued, Active, Transferred, Suspended, Retired).</li>
       </ul>
-      <p><a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/05_whitepaper_tecnico.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
+      <p><a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/05_whitepaper_tecnico.md" target="_blank" class="btn btn-primary btn-sm">Abrir Documento Integral no GitHub</a></p>
     `
   }
 };
 
 // ─── Init ─────────────────────────────────────────────────
 async function init() {
+  await loadParameters();
+
   blockchain = new BioBlockchain();
   if (blockchain.ready) await blockchain.ready;
   else await sleep(100);
@@ -303,9 +305,12 @@ async function init() {
   calculateRBE();
   selectBiomeFromMap('amz');
   setWalletProfile('guardian');
+  calculateInteractivePoE();
+  renderPoENodesTable();
+  renderDynamicVPL();
 
   log('BioChain inicializada · Bloco Gênesis criado', 'success');
-  log('Tecnocracia Biocêntrica · Federação de Biomas ativa', 'success');
+  log('Tecnodemocracia Biocêntrica · Consenso Proof-of-Ecology ativo', 'success');
 
   renderChain();
   updateStats();
@@ -328,10 +333,19 @@ async function init() {
     if (e.target.id === 'glossary-modal') closeGlossaryModal();
   });
 
-  // X2: Roteamento por hash — abre aba da URL se presente na carga inicial
+  // X2 & UX-02: Roteamento por hash e navegação histórico (Voltar / Avançar)
   const hashTab = (location.hash || '').replace('#', '').trim();
-  const validTabs = ['causal', 'rbe', 'biomas', 'dlt', 'narcisidio', 'politica'];
-  if (hashTab && validTabs.includes(hashTab)) switchTab(hashTab);
+  const validTabs = ['causal', 'rbe', 'biomas', 'dlt', 'narcisidio', 'politica', 'poe'];
+  if (hashTab && validTabs.includes(hashTab)) switchTab(hashTab, false);
+
+  window.addEventListener('popstate', () => {
+    const curHash = (location.hash || '').replace('#', '').trim();
+    if (curHash && validTabs.includes(curHash)) {
+      switchTab(curHash, false);
+    } else {
+      switchTab('causal', false);
+    }
+  });
 
   // Atalho Teclado ESC para fechar gavetas e modais
   document.addEventListener('keydown', (e) => {
@@ -346,7 +360,7 @@ async function init() {
 }
 
 // ─── Switch Tab Navigation ────────────────────────────────
-function switchTab(tabId) {
+function switchTab(tabId, pushHistory = true) {
   document.querySelectorAll('.tab-btn').forEach(b => {
     b.classList.remove('active');
     b.setAttribute('aria-selected', 'false');
@@ -367,10 +381,28 @@ function switchTab(tabId) {
     content.setAttribute('aria-hidden', 'false');
   }
 
-  // X2: Atualiza URL por aba — permite citar, compartilhar e usar botão Voltar
-  if (window.history && history.pushState) {
+  // UX-03: Compact hero on sub-tabs
+  const heroEl = document.querySelector('.hero');
+  if (heroEl) {
+    if (tabId === 'causal') {
+      heroEl.classList.remove('hero-compact');
+    } else {
+      heroEl.classList.add('hero-compact');
+    }
+  }
+
+  // X2 & UX-02: Atualiza URL por aba e histórico
+  if (pushHistory && window.history && history.pushState) {
     history.pushState(null, '', '#' + tabId);
   }
+
+  if (tabId === 'poe') {
+    calculateInteractivePoE();
+    renderPoENodesTable();
+  } else if (tabId === 'politica' || tabId === 'narcisidio') {
+    renderDynamicVPL();
+  }
+
   log(`Navegação: Módulo "${tabId.toUpperCase()}" ativado`, 'info');
 }
 
@@ -760,7 +792,7 @@ function updateStats() {
   document.getElementById('m-queima').textContent = (m.queima || blockchain.getTotalBurned()).toLocaleString('pt-BR');
 
   const totalTokens = blockchain.getTotalTokens();
-    // D9: ISE calculado puramente a partir de variáveis biofísicas reais (IIE médio e sequestro de carbono)
+  // D9: ISE calculado puramente a partir de variáveis biofísicas reais (IIE médio e sequestro de carbono)
   // Sem contaminação espúria por contagem de blocos computacionais (D9)
   const avgIIE = BIOMES_DATA.reduce((acc, b) => acc + (b.canopy ? (b.canopy / 100) : 0.85), 0) / BIOMES_DATA.length;
   const totalArea = blockchain.getTotalArea() || 850;
@@ -770,6 +802,28 @@ function updateStats() {
   const ise = Math.min(100, Math.max(10, Math.round((avgIIE * 60) + (fatorCarbono * 40))));
   document.getElementById('eco-bar').style.width = ise + '%';
   document.getElementById('eco-pct').textContent = ise + '%';
+
+  updateWalletBalances();
+}
+
+function updateWalletBalances() {
+  if (typeof blockchain === 'undefined' || typeof currentProfile === 'undefined') return;
+  const prof = WALLET_PROFILES[currentProfile];
+  if (!prof) return;
+  const ledgerState = blockchain.getLedgerState ? blockchain.getLedgerState() : null;
+  const balances = ledgerState ? ledgerState.balances : {};
+  const onChainBalance = balances[prof.origin];
+  const gaiaVal = onChainBalance !== undefined ? onChainBalance : prof.gaia;
+  const gaiaPrice = getParam('GAIA_BRL', 6.00);
+  const drexVal = gaiaVal * gaiaPrice;
+
+  const drawerGaia = document.getElementById('drawer-gaia-balance');
+  const drawerDrex = document.getElementById('drawer-drex-balance');
+  if (drawerGaia) drawerGaia.textContent = `${gaiaVal.toLocaleString('pt-BR')} GAIA`;
+  if (drawerDrex) drawerDrex.textContent = `≈ R$ ${drexVal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} Drex`;
+
+  const pillBalance = document.getElementById('wallet-balance');
+  if (pillBalance) pillBalance.textContent = `${gaiaVal.toLocaleString('pt-BR')} GAIA | R$ ${drexVal.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} Drex`;
 }
 
 // ─── Biomas & Oráculos Module ─────────────────────────────
@@ -880,56 +934,73 @@ async function loadParameters() {
   }
 }
 loadParameters();
+// ─── Parameter Access Helper (A1) ─────────────────────────
+function getParam(key, fallback) {
+  if (typeof PARAMS === 'undefined' || PARAMS[key] === undefined) return fallback;
+  return (PARAMS[key]?.valor !== undefined) ? PARAMS[key].valor : PARAMS[key];
+}
+
 // ─── RBE Shared Calculation ───────────────────────────────
-const BASE_RBE = PARAMS.PISO_RBE; // Piso social: 50% SM (R$ 1.621,00) — incondicional (§2 relatório)
+const BASE_RBE = 810.50; // Piso social proposto: 50% SM 2026 (R$ 1.621,00) — incondicional (§2 relatório)
 
 function computeRBE(bioma, area, families, iie) {
   // A3 & A6: Função pura e canônica de cálculo da RBE com validação de invariantes
   area = Math.max(0, Number(area) || 0);
-  families = Math.max(1, parseInt(families, 10) || 1); // N >= 1 evita divisão por zero (Item 9.3)
+  families = Math.max(1, parseInt(families, 10) || 1); // N >= 1 evita divisão por zero
   iie = Math.min(1.0, Math.max(0.0, Number(iie) || 0)); // IIE restrito ao intervalo [0, 1]
 
+  const baseRbe = getParam('PISO_RBE', 810.50);
   const stressMultiplier = (window.BIOME_STRESS_FACTORS && window.BIOME_STRESS_FACTORS[bioma]) || 1.0;
-  const taxaMensalPSA = (typeof PARAMS !== 'undefined' && (PARAMS.PSA_HA_MES?.valor ?? PARAMS.PSA_HA_MES)) || 12.50;
+  const taxaMensalPSA = getParam('PSA_HA_MES', 12.50);
   const fatorElegibilidade = 1.0; // E = 1.0 para territórios homologados e auditados
 
-  // Parcela territorial de PSA: A * taxa * Omega_bioma * IIE * E
-  const psaTerritorialBruto = area * taxaMensalPSA * stressMultiplier * iie * fatorElegibilidade;
+  // Disjuntor Biocêntrico (TEO-01 / E3): Se IIE < 0.60, a parcela variável de PSA é zerada,
+  // preservando apenas o piso social incondicional B0 para segurança alimentar
+  const disjuntorThreshold = getParam('IIE_THRESHOLD_SUSPEND', 0.60);
+  const disjuntorAtivo = iie < disjuntorThreshold;
+  const taxaEfetivaPSA = disjuntorAtivo ? 0.0 : taxaMensalPSA;
+
+  // Parcela territorial de PSA: A * taxaEfetiva * Omega_bioma * IIE * E
+  const psaTerritorialBruto = area * taxaEfetivaPSA * stressMultiplier * iie * fatorElegibilidade;
   
   // A7: Aplicação de teto prudencial distributivo por família (Art. 14, § 3º)
-  const maxPsaFam = (typeof PARAMS !== 'undefined' && (PARAMS.MAX_PSA_FAMILIA?.valor ?? PARAMS.MAX_PSA_FAMILIA)) || 2500.00;
+  const maxPsaFam = getParam('MAX_PSA_FAMILIA', 2500.00);
   const parcelaVariavelPorFamiliaBruta = families > 0 ? (psaTerritorialBruto / families) : 0;
   const parcelaVariavelPorFamilia = Math.min(parcelaVariavelPorFamiliaBruta, maxPsaFam);
   const psaTerritorialTotal = parcelaVariavelPorFamilia * families;
 
   // Valor por família: Piso Proposto B0 (50% SM 2026 = R$ 810,50) + PSA Territorial
-  const valorPorFamilia = BASE_RBE + parcelaVariavelPorFamilia;
+  const valorPorFamilia = baseRbe + parcelaVariavelPorFamilia;
   const repasseTotalTerritorio = valorPorFamilia * families;
 
   // B1: Liquidação paramétrica em tokens GAIA (R$ 6,00 primário vs R$ 47,00 mercado voluntário)
-  const gaiaPrice = (typeof PARAMS !== 'undefined' && (PARAMS.GAIA_BRL?.valor ?? PARAMS.GAIA_BRL)) || 6.00;
+  const gaiaPrice = getParam('GAIA_BRL', 6.00);
   const gaiaTokensEquiv = Math.round(valorPorFamilia / gaiaPrice);
 
   // B6: Sequestro anual de CO2e calibrado especificamente por bioma
-  const co2Map = (typeof PARAMS !== 'undefined' && (PARAMS.CO2_HA_ANO_BIOMA?.valor ?? PARAMS.CO2_HA_ANO_BIOMA)) || {};
+  const co2Map = getParam('CO2_HA_ANO_BIOMA', {});
   const co2Taxa = co2Map[bioma] || 3.20;
   const co2Anual = Math.round(area * co2Taxa);
 
   // C1: Adicionalidade contrafactual independente do IIE (Y0 histórico - Y1 residual com leakage 30%)
-  const y0Map = (typeof PARAMS !== 'undefined' && (PARAMS.Y0_BIOMA?.valor ?? PARAMS.Y0_BIOMA)) || {};
+  const y0Map = getParam('Y0_BIOMA', {});
   const y0 = y0Map[bioma] || 0.018;
-  const fatorResidual = (typeof PARAMS !== 'undefined' && (PARAMS.LEAKAGE_FACTOR?.valor ?? PARAMS.LEAKAGE_FACTOR)) || 0.30;
+  const fatorResidual = getParam('LEAKAGE_FACTOR', 0.30);
   const y1 = Math.max(0, y0 * (1 - iie) * fatorResidual);
-  const haEvitadosAnual = +((y0 - y1) * area).toFixed(1);
-  const additionalityPct = (((y0 - y1) / y0) * 100).toLocaleString('pt-BR', {
+  const delta = Math.max(0, y0 - y1);
+  const haEvitadosAnual = +(delta * area).toFixed(1);
+  const additionalityVal = y0 > 0 ? (delta / y0) * 100 : 0;
+  const additionalityPct = additionalityVal.toLocaleString('pt-BR', {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1
   });
 
   return {
-    BASE_RBE,
+    BASE_RBE: baseRbe,
+    disjuntorAtivo,
     stressMultiplier,
     taxaMensalPSA,
+    taxaEfetivaPSA,
     fatorElegibilidade,
     psaTerritorialTotal,
     parcelaVariavelPorFamilia,
@@ -972,6 +1043,16 @@ function calculateRBE() {
 
   const additionalityEl = document.getElementById('rbe-additionality-val');
   if (additionalityEl) additionalityEl.textContent = `+${rbe.additionalityPct}% de retenção contrafactual (${rbe.haEvitadosAnual} ha/ano evitados vs. Y₀ = 1,8% a.a.)`;
+
+  const disjuntorNotice = document.getElementById('rbe-disjuntor-notice');
+  if (disjuntorNotice) {
+    if (rbe.disjuntorAtivo) {
+      disjuntorNotice.style.display = 'block';
+      disjuntorNotice.innerHTML = `⚠️ <b>Disjuntor Biocêntrico Ativado (IIE &lt; 60%):</b> Parcela variável de PSA suspensa preventivamente. Preservado o piso social incondicional B₀ (R$ ${rbe.BASE_RBE.toFixed(2)}) para subsistência mínima comunitária.`;
+    } else {
+      disjuntorNotice.style.display = 'none';
+    }
+  }
 }
 
 function simulateRBEDeposit() {
@@ -1620,3 +1701,118 @@ function truncate(str, n) { return str.length > n ? str.slice(0, n) + '…' : st
 
 // ─── Bootstrap ────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', init);
+
+// ─── C2 & TEO-02: Memória de Cálculo Dinâmica do VPL (10 Anos, r = 6,5% a.a.) ───
+function computeVPL(fluxos, taxaDesconto = 0.065) {
+  if (!Array.isArray(fluxos) || fluxos.length === 0) return 0;
+  let vpl = fluxos[0];
+  for (let t = 1; t < fluxos.length; t++) {
+    vpl += fluxos[t] / Math.pow(1 + taxaDesconto, t);
+  }
+  return vpl;
+}
+
+const CASHFLOW_PREDATORY = [1400, 350, 350, 350, 180, 180, 180, 50, 50, 50, 50];
+const CASHFLOW_BIOCHAIN = [-150, 1870, 1870, 1870, 1870, 1870, 1870, 1870, 1870, 1870, 1870];
+const CASHFLOW_SEM_RBE = [-150, 270, 270, 270, 270, 270, 270, 270, 270, 270, 270];
+
+function renderDynamicVPL() {
+  const r = getParam('DISCOUNT_RATE_SOCIAL', 0.065);
+  const vplPred = computeVPL(CASHFLOW_PREDATORY, r);
+  const vplBio = computeVPL(CASHFLOW_BIOCHAIN, r);
+  const vplSemRBE = computeVPL(CASHFLOW_SEM_RBE, r);
+
+  const elPred = document.getElementById('vpl-card-predatory');
+  if (elPred) {
+    elPred.textContent = `VPL em 10 Anos: R$ ${Math.round(vplPred).toLocaleString('pt-BR')} / ha (Taxa de desconto social r = ${(r * 100).toFixed(1)}% a.a.; corte raso inicial + pasto com decaimento acelerado e risco de embargo IBAMA).`;
+  }
+  const elBio = document.getElementById('vpl-card-biocentric');
+  if (elBio) {
+    elBio.textContent = `VPL em 10 Anos: R$ ${Math.round(vplBio).toLocaleString('pt-BR')} / ha (Taxa de desconto social r = ${(r * 100).toFixed(1)}% a.a.; fluxo contínuo PSA R$ 12,50/ha·mês + créditos GAIA e RBE).`;
+  }
+
+  const elRowPred = document.getElementById('vpl-table-predatory');
+  if (elRowPred) {
+    elRowPred.textContent = `VPL em 10 Anos: R$ ${Math.round(vplPred).toLocaleString('pt-BR')} / ha (Exaustivo / Degradação)`;
+  }
+  const elRowBio = document.getElementById('vpl-table-biocentric');
+  if (elRowBio) {
+    elRowBio.textContent = `VPL em 10 Anos: R$ ${Math.round(vplBio).toLocaleString('pt-BR')} / ha (Perpétuo / Regenerativo)`;
+  }
+}
+
+// ─── TEO-01: Simulador Interativo do Consenso Proof-of-Ecology (PoE) ───
+function calculateInteractivePoE() {
+  const biomaSelect = document.getElementById('poe-sim-bioma');
+  const areaInput = document.getElementById('poe-sim-area');
+  const iieSlider = document.getElementById('poe-sim-iie');
+  const restSlider = document.getElementById('poe-sim-rest');
+
+  if (!biomaSelect || !areaInput || !iieSlider) return;
+
+  const bioma = biomaSelect.value || 'amz';
+  const area = Math.max(0, parseFloat(areaInput.value) || 0);
+  const iie = Math.min(1.0, Math.max(0.0, parseFloat(iieSlider.value) / 100));
+  const rest = Math.min(1.0, Math.max(0.0, parseFloat(restSlider?.value || 0) / 100));
+
+  const stressMap = { amz: 1.20, cer: 1.00, caa: 1.15, mat: 1.30, pan: 1.25, pam: 1.05, cos: 1.10 };
+  const stress = stressMap[bioma] || 1.0;
+
+  const iieValEl = document.getElementById('poe-sim-iie-val');
+  if (iieValEl) iieValEl.textContent = `${Math.round(iie * 100)}%`;
+  const restValEl = document.getElementById('poe-sim-rest-val');
+  if (restValEl) restValEl.textContent = `${Math.round(rest * 100)}%`;
+
+  const nodeDemo = {
+    area: area,
+    ecologicalScore: iie,
+    restorationFactor: rest,
+    stressFactor: stress
+  };
+
+  const ecoScore = typeof computeEcoScore === 'function' ? computeEcoScore(nodeDemo) : (iie < 0.60 ? 0 : area * iie * (1 + 0.25 * rest) * stress);
+  const isTrip = iie < 0.60;
+
+  const scoreEl = document.getElementById('poe-sim-ecoscore');
+  if (scoreEl) scoreEl.textContent = Math.round(ecoScore).toLocaleString('pt-BR');
+
+  const statusEl = document.getElementById('poe-sim-status');
+  if (statusEl) {
+    if (isTrip) {
+      statusEl.className = 'badge-fail';
+      statusEl.innerHTML = '🚨 DISJUNTOR BIOCÊNTRICO ATIVADO (IIE &lt; 0,60) — EcoScore Zerado &amp; Nó Suspenso do Consenso';
+    } else {
+      statusEl.className = 'badge-ok';
+      statusEl.innerHTML = '🛡️ NÓ APTO AO CONSENSO — EcoScore Ativo e Elegível para Mineração';
+    }
+  }
+
+  const phiWeight = Math.pow(ecoScore, 0.85);
+  const weightEl = document.getElementById('poe-sim-weight');
+  if (weightEl) weightEl.textContent = `${Math.round(phiWeight).toLocaleString('pt-BR')} (S_i^0,85 ponderado)`;
+}
+
+function renderPoENodesTable() {
+  const tbody = document.getElementById('poe-nodes-tbody');
+  if (!tbody || !blockchain) return;
+
+  const nodes = blockchain.nodes || [];
+  const totalWeight = nodes.reduce((sum, n) => sum + (n.weight || 1), 0);
+
+  tbody.innerHTML = nodes.map(n => {
+    const isSuspended = (n.ecologicalScore || 0) < 0.60;
+    const share = totalWeight > 0 ? ((n.weight / totalWeight) * 100).toFixed(1) : '0.0';
+    return `
+      <tr>
+        <td><b>${n.name}</b></td>
+        <td>${(n.area || 0).toLocaleString('pt-BR')} ha</td>
+        <td><span style="font-weight:700; color:${isSuspended ? 'var(--red)' : 'var(--green)'};">${Math.round((n.ecologicalScore || 0) * 100)}%</span></td>
+        <td>${(n.stressFactor || 1.0).toFixed(2)}x</td>
+        <td>${Math.round((n.restorationFactor || 0) * 100)}%</td>
+        <td style="font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--teal);">${Math.round(n.ecoScore || 0).toLocaleString('pt-BR')}</td>
+        <td><span class="badge" style="background:rgba(45,212,191,0.15); color:var(--teal);">${share}% (Teto 25%)</span></td>
+        <td>${isSuspended ? '<span class="badge-fail">Suspenso</span>' : '<span class="badge-ok">Ativo / Apto</span>'}</td>
+      </tr>
+    `;
+  }).join('');
+}

@@ -83,6 +83,9 @@
       <button class="tab-btn" id="btn-tab-politica" onclick="switchTab('politica')" role="tab" aria-selected="false" aria-controls="tab-politica" tabindex="0">
         <span>🏛️</span> Acervo de Estado <span class="tab-badge">5 Docs</span>
       </button>
+      <button class="tab-btn" id="btn-tab-poe" onclick="switchTab('poe')" role="tab" aria-selected="false" aria-controls="tab-poe" tabindex="0">
+        <span>🌱</span> Consenso PoE &amp; EcoScore
+      </button>
     </nav>
   </header>
 
@@ -346,6 +349,7 @@
           <button class="btn btn-primary" style="margin-top: 16px; width: 100%;" onclick="simulateRBEDeposit()">
             <span>🚀</span> Simular Emissão de Lote RBE On-Chain
           </button>
+          <div id="rbe-disjuntor-notice" style="display:none; margin-top:14px; padding:12px; border-radius:var(--radius-sm); border-left:4px solid var(--red); background:rgba(239,68,68,0.12); font-size:12px; color:#fca5a5; line-height:1.5;"></div>
         </div>
       </div>
     </section>
@@ -544,6 +548,7 @@
             <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="syncMapWithCalculator()">
               <span>💚</span> Simular RBE neste Bioma
             </button>
+          </div>
         </div>
       </div>
 
@@ -840,8 +845,8 @@
             <li>❌ <b>Insegurança Jurídica:</b> Risco constante de embargo, multas do IBAMA e perda de acesso a crédito rural.</li>
             <li>❌ <b>Horizonte Econômico:</b> Degradação do solo em 5 a 7 anos, transformando ativos em desertos.</li>
           </ul>
-          <div style="background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px; font-size: 12px; color: #fca5a5;">
-            <b>VPL em 10 Anos:</b> R$ 2.450 / ha (Taxa de desconto social r = 6,5% a.a.; corte raso inicial + pasto com decaimento acelerado e risco de embargo IBAMA).
+          <div id="vpl-card-predatory" style="background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px; font-size: 12px; color: #fca5a5;">
+            <b>VPL em 10 Anos:</b> R$ 2.839 / ha (Taxa de desconto social r = 6,5% a.a.; corte raso inicial + pasto com decaimento acelerado e risco de embargo IBAMA).
           </div>
         </div>
 
@@ -857,8 +862,8 @@
             <li>✅ <b>Colateralização Financeira:</b> Ativos GAIA auditáveis servem de garantia em empréstimos verdes no SFN.</li>
             <li>✅ <b>Soberania e Reconhecimento:</b> O Brasil como polo regulador de ativos ambientais auditáveis e rastreáveis internacionalmente.</li>
           </ul>
-          <div style="background: rgba(52, 211, 100, 0.1); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px; font-size: 12px; color: #86efac;">
-            <b>VPL em 10 Anos:</b> R$ 14.800 / ha (Taxa de desconto social r = 6,5% a.a.; fluxo contínuo PSA R$ 12,50/ha·mês + créditos GAIA e RBE).
+          <div id="vpl-card-biocentric" style="background: rgba(52, 211, 100, 0.1); border-radius: var(--radius-sm); padding: 12px; margin-top: 16px; font-size: 12px; color: #86efac;">
+            <b>VPL em 10 Anos:</b> R$ 13.293 / ha (Taxa de desconto social r = 6,5% a.a.; fluxo contínuo PSA R$ 12,50/ha·mês + créditos GAIA e RBE).
           </div>
         </div>
       </div>
@@ -887,10 +892,10 @@
             Documentação legislativa, regulatória e técnica submetida para transformar a BioChain em política de Estado brasileira.
           </p>
         </div>
-        <a href="https://github.com/PSousa22/biochain/tree/main/politica-publica" target="_blank" class="btn btn-ghost">
+        <a href="https://github.com/PABSousa97/biochain/tree/main/politica-publica" target="_blank" class="btn btn-ghost">
           <span>🐙</span> Ver Acervo no GitHub
         </a>
-      
+      </div>
       
       <!-- Tabela de Memória de Cálculo VPL em 10 Anos (Item C2) -->
       <div class="card" style="background: var(--surface2); border: 1px solid var(--border); padding: 20px; margin-top: 16px;">
@@ -940,21 +945,20 @@
               </tr>
               <tr style="background: rgba(255,255,255,0.05); font-weight: 700;">
                 <td><b>VPL (r=6,5%)</b></td>
-                <td colspan="2" style="color: var(--red);">VPL em 10 Anos: R$ 2.450 / ha (Exaustivo / Degradação)</td>
-                <td colspan="2" style="color: var(--green);">VPL em 10 Anos: R$ 14.800 / ha (Perpétuo / Regenerativo)</td>
+                <td id="vpl-table-predatory" colspan="2" style="color: var(--red);">VPL em 10 Anos: R$ 2.839 / ha (Exaustivo / Degradação)</td>
+                <td id="vpl-table-biocentric" colspan="2" style="color: var(--green);">VPL em 10 Anos: R$ 13.293 / ha (Perpétuo / Regenerativo)</td>
               </tr>
             </tbody>
           </table>
         </div>
         <div style="margin-top: 14px; padding: 12px; border-left: 3px solid var(--teal); background: rgba(45,212,191,0.06); font-size: 12px; color: var(--text2); line-height: 1.5;">
-          <b>Modelo Estratégico de Dissuasão & Enforcement (C3):</b> O limiar de dissuasão do desmatamento ilegal é dado por <code>p* = (VP_desmate − VP_custódia) / S</code>, onde <code>p</code> é a probabilidade de autuação e <code>S</code> a sanção financeira/confisco. Como a BioChain eleva <code>VP_custódia</code> de R$ 2.450 para R$ 14.800/ha, a condição <code>VP_custódia &gt; VP_desmate</code> torna a preservação economicamente dominante mesmo sob fiscalização moderada, reduzindo a sobrecarga fiscal do aparato repressivo estatal.
+          <b>Modelo Estratégico de Dissuasão & Enforcement (C3):</b> O limiar de dissuasão do desmatamento ilegal é dado por <code>p* = (VP_desmate − VP_custódia) / S</code>, onde <code>p</code> é a probabilidade de autuação e <code>S</code> a sanção financeira/confisco. Como a BioChain eleva <code>VP_custódia</code> de R$ 2.839 para R$ 13.293/ha (e R$ 1.791/ha no baseline sem RBE), a condição <code>VP_custódia &gt; VP_desmate</code> torna a preservação economicamente dominante mesmo sob fiscalização moderada, reduzindo a sobrecarga fiscal do aparato repressivo estatal.
         </div>
       </div>
 
-<p style="font-size: 11.5px; color: var(--text3); margin: 12px 0 20px 0; line-height: 1.5;">
+      <p style="font-size: 11.5px; color: var(--text3); margin: 12px 0 20px 0; line-height: 1.5;">
         <b>Nota Metodológica & Formulação do VPL <span class="data-tag data-tag-sim">Simulado</span> (§6):</b> <code>VPL_j = -I_{0,j} + \sum_{t=1}^T \frac{FC_{j,t}}{(1+r)^t}</code>. A comparação considera taxa de desconto social r = 6,5% a.a., custos de transação, monitoramento e dedução de riscos de reversão. Projeções de simulação computacional não configuram comprovação causal empírica definitiva.
       </p>
-</div>
 
       <div class="policy-cards-grid">
         <!-- Card 1 -->
@@ -968,7 +972,7 @@
           </div>
           <div class="policy-actions">
             <button class="btn btn-secondary btn-sm" onclick="openDocModal('01')">Ler Online</button>
-            <a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/01_politica_publica_diretriz.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/01_politica_publica_diretriz.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
           </div>
         </div>
 
@@ -983,7 +987,7 @@
           </div>
           <div class="policy-actions">
             <button class="btn btn-secondary btn-sm" onclick="openDocModal('02')">Ler Online</button>
-            <a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/02_one_pager_executivo.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/02_one_pager_executivo.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
           </div>
         </div>
 
@@ -998,7 +1002,7 @@
           </div>
           <div class="policy-actions">
             <button class="btn btn-secondary btn-sm" onclick="openDocModal('03')">Ler Online</button>
-            <a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/03_pitch_deck_institucional.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/03_pitch_deck_institucional.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
           </div>
         </div>
 
@@ -1013,7 +1017,7 @@
           </div>
           <div class="policy-actions">
             <button class="btn btn-secondary btn-sm" onclick="openDocModal('04')">Ler Online</button>
-            <a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/04_anteprojeto_de_lei.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/04_anteprojeto_de_lei.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
           </div>
         </div>
 
@@ -1028,12 +1032,246 @@
           </div>
           <div class="policy-actions">
             <button class="btn btn-secondary btn-sm" onclick="openDocModal('05')">Ler Online</button>
-            <a href="https://github.com/PSousa22/biochain/blob/main/politica-publica/05_whitepaper_tecnico.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
+            <a href="https://github.com/PABSousa97/biochain/blob/main/politica-publica/05_whitepaper_tecnico.md" target="_blank" class="btn btn-ghost btn-sm">GitHub</a>
           </div>
         </div>
       </div>
     </section>
   </div>
+
+  <!-- ═══════════════════ TAB 7: CONSENSO PROOF-OF-ECOLOGY ═══════════════════ -->
+  <div id="tab-poe" class="tab-content" role="tabpanel" aria-labelledby="btn-tab-poe" tabindex="0">
+    <section class="poe-section">
+      <div class="biomes-header-box">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="badge" style="background:rgba(52,211,100,0.15); color:var(--green); font-size:11px; padding:4px 10px; border-radius:20px; font-weight:700;">TEORIA & PROTOCOLO (TEO-01)</span>
+            <span class="badge" style="background:rgba(45,212,191,0.15); color:var(--teal); font-size:11px; padding:4px 10px; border-radius:20px; font-weight:700;">CONSENSO BIOCÊNTRICO</span>
+          </div>
+          <h2 style="font-size: 24px; font-weight: 800; color: var(--green); margin-top: 8px;">Proof-of-Ecology (PoE): Consenso Fundamentado em Riquezas Naturais</h2>
+          <p style="font-size: 13px; color: var(--text2); margin-top: 4px; max-width: 850px; line-height: 1.6;">
+            Uma ruptura paradigmática com o desperdício termodinâmico do Proof-of-Work (PoW) e a plutocracia financeira do Proof-of-Stake (PoS). 
+            No PoE, a autoridade criptográfica é função direta da integridade ecossistêmica comprovada, da regeneração ativa e da custódia territorial soberana.
+          </p>
+        </div>
+        <a href="verify.html" class="btn btn-secondary">
+          <span>🔍</span> Auditoria Externa (Verify)
+        </a>
+      </div>
+
+      <!-- Comparativo Visual Triplo: PoW vs PoS vs PoE -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin: 24px 0;">
+        <!-- PoW -->
+        <div class="card" style="background: rgba(239,68,68,0.04); border: 1px solid rgba(239,68,68,0.2); padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">⛏️</span>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--red);">Proof of Work (PoW)</h3>
+          </div>
+          <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
+            <b>Trabalho:</b> Força bruta computacional de hashes SHA-256 arbitrários sem valor extrínseco.
+          </p>
+          <ul style="font-size: 12px; color: var(--text2); line-height: 1.7; padding-left: 18px;">
+            <li>❌ Desperdício massivo de eletricidade fóssil (termodinâmica cega).</li>
+            <li>❌ Corrida armamentista por ASICs especializados e data centers centralizados.</li>
+            <li>❌ Desconectado de qualquer métrica física da biosfera planetária.</li>
+          </ul>
+        </div>
+
+        <!-- PoS -->
+        <div class="card" style="background: rgba(251,191,36,0.04); border: 1px solid rgba(251,191,36,0.2); padding: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">💰</span>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--gold);">Proof of Stake (PoS)</h3>
+          </div>
+          <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
+            <b>Stake:</b> Bloqueio de liquidez de moeda fiduciária ou tokens puramente financeiros.
+          </p>
+          <ul style="font-size: 12px; color: var(--text2); line-height: 1.7; padding-left: 18px;">
+            <li>⚠️ Risco estrutural de plutocracia: quem detém mais capital decide o consenso.</li>
+            <li>⚠️ Efeito Cantillon: juros compostos aumentam a concentração de governança.</li>
+            <li>⚠️ Slashing pune apenas falhas financeiras ou de liveness, ignorando a degradação da terra.</li>
+          </ul>
+        </div>
+
+        <!-- PoE -->
+        <div class="card" style="background: rgba(52,211,100,0.06); border: 1px solid rgba(52,211,100,0.3); padding: 20px; box-shadow: 0 0 15px rgba(52,211,100,0.08);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+            <span style="font-size: 24px;">🌱</span>
+            <h3 style="font-size: 16px; font-weight: 800; color: var(--green);">Proof of Ecology (PoE)</h3>
+          </div>
+          <p style="font-size: 12px; color: var(--text2); line-height: 1.6; margin-bottom: 12px;">
+            <b>Trabalho &amp; Stake:</b> Custódia territorial perpétua, biomassa sequestrada e sensoriamento auditável.
+          </p>
+          <ul style="font-size: 12px; color: var(--text2); line-height: 1.7; padding-left: 18px;">
+            <li>✅ <b>Trabalho Físico Útil:</b> Restauração de cobertura vegetal, monitoramento acústico e prevenção de queimadas.</li>
+            <li>✅ <b>Stake Territorial (A_i):</b> Hectares homologados sob tutela soberana em biomas brasileiros.</li>
+            <li>✅ <b>Slashing Ecológico:</b> Detecção de desmate pelo DETER/PRODES congela tokens e revoga o nó validador.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Fundamentação Matemática: EcoScore e IIE -->
+      <div class="card" style="background: var(--surface2); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 17px; font-weight: 800; color: var(--teal); margin-bottom: 16px;">
+          📐 A Formulação Algorítmica do EcoScore (S_i) e do Índice de Integridade Ecológica (IIE)
+        </h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+          <!-- Coluna 1: EcoScore Formula -->
+          <div style="background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); padding: 18px; border-left: 4px solid var(--green);">
+            <div style="font-size: 12px; text-transform: uppercase; color: var(--text3); font-weight: 700; margin-bottom: 8px;">1. Equação do EcoScore Territorial</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--green); background: rgba(52,211,100,0.08); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+              S_i = A_i · IIE_i · (1 + β · Restauração_i) · Ω_bioma
+            </div>
+            <p style="font-size: 12px; color: var(--text2); line-height: 1.6;">
+              • <b>A_i:</b> Área homologada sob custódia perpétua (hectares).<br/>
+              • <b>IIE_i:</b> Índice de Integridade Ecológica multivariado [0, 1].<br/>
+              • <b>β = 0,25:</b> Bônus paramétrico de regeneração ativa comprovada em campo.<br/>
+              • <b>Ω_bioma:</b> Multiplicador de vulnerabilidade ecológica (Amazônia 1,20x; Mata Atlântica 1,30x; Caatinga 1,15x; etc.).
+            </p>
+          </div>
+
+          <!-- Coluna 2: IIE Formula -->
+          <div style="background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); padding: 18px; border-left: 4px solid var(--teal);">
+            <div style="font-size: 12px; text-transform: uppercase; color: var(--text3); font-weight: 700; margin-bottom: 8px;">2. Composição do IIE Multimodal</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--teal); background: rgba(45,212,191,0.08); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+              IIE_i = 0,40 · Canopy + 0,35 · NDVI + 0,25 · Hídrico
+            </div>
+            <p style="font-size: 12px; color: var(--text2); line-height: 1.6;">
+              • <b>Canopy (40%):</b> Cobertura de copa contínua auditada por imagens Sentinel-2 / CBERS-4A.<br/>
+              • <b>NDVI (35%):</b> Índice de vegetação por diferença normalizada contra estresse de seca.<br/>
+              • <b>Hídrico (25%):</b> Vazão e preservação de nascentes por telemetria IoT terrestre (ANA/CPRM).
+            </p>
+          </div>
+
+          <!-- Coluna 3: Disjuntor Biocêntrico & Anti-Sybil -->
+          <div style="background: rgba(0,0,0,0.25); border-radius: var(--radius-sm); padding: 18px; border-left: 4px solid var(--gold);">
+            <div style="font-size: 12px; text-transform: uppercase; color: var(--text3); font-weight: 700; margin-bottom: 8px;">3. Salvaguarda Biocêntrica &amp; Teto Anti-Sybil (25%)</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold); background: rgba(251,191,36,0.08); padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+              Se IIE_i &lt; 0,60 ⟹ S_i = 0 (Suspensão Imediata)<br/>
+              W_i = min(S_i^0,85 · R_i · C_i,  0,25 · ∑ W_k)
+            </div>
+            <p style="font-size: 12px; color: var(--text2); line-height: 1.6;">
+              • <b>Disjuntor Biocêntrico:</b> Se o IIE cai abaixo de 60%, o poder de validação colapsa a zero instantaneamente.<br/>
+              • <b>Poder Sublinear (φ = 0,85):</b> Curva côncava previne monopólio de latifúndios.<br/>
+              • <b>Teto 25%:</b> Nenhum nó isolado pode deter mais de um quarto do consenso da federação.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Simulador Interativo de EcoScore e Seleção de Validador -->
+      <div class="card" style="background: var(--surface2); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+          <h3 style="font-size: 17px; font-weight: 800; color: var(--green);">
+            🧪 Bancada Interativa de Simulação do Proof-of-Ecology
+          </h3>
+          <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text3);">
+            Altere os parâmetros territoriais para observar a resposta imediata do algoritmo
+          </span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+          <!-- Controles -->
+          <div>
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="poe-sim-bioma">Bioma sob Custódia (Multiplicador Ω)</label>
+              <select id="poe-sim-bioma" class="form-control" onchange="calculateInteractivePoE()">
+                <option value="amz">Amazônia (Ω = 1,20x · Alta complexidade hidrológica)</option>
+                <option value="cer">Cerrado (Ω = 1,00x · Berço das águas nacionais)</option>
+                <option value="caa">Caatinga (Ω = 1,15x · Resiliência semiárida única)</option>
+                <option value="mat">Mata Atlântica (Ω = 1,30x · Máxima pressão antrópica)</option>
+                <option value="pan">Pantanal (Ω = 1,25x · Maior planície alagável)</option>
+                <option value="pam">Pampa (Ω = 1,05x · Campos sulinos)</option>
+                <option value="cos">Zona Costeira e Marinha (Ω = 1,10x · Manguezais e restingas)</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <label for="poe-sim-area">Área Territorial Homologada (Hectares)</label>
+              <input type="number" id="poe-sim-area" class="form-control" value="2500" min="10" max="100000" step="50" oninput="calculateInteractivePoE()" />
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between;">
+                <label for="poe-sim-iie">Índice de Integridade Ecológica (IIE)</label>
+                <span id="poe-sim-iie-val" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--teal);">88%</span>
+              </div>
+              <input type="range" id="poe-sim-iie" min="0" max="100" value="88" class="form-range" oninput="calculateInteractivePoE()" />
+              <div style="font-size: 10px; color: var(--text3); margin-top: 4px;">Arraste abaixo de 60% para disparar o Disjuntor Biocêntrico.</div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between;">
+                <label for="poe-sim-rest">Fator de Restauração Ativa (β = 0,25)</label>
+                <span id="poe-sim-rest-val" style="font-family:'JetBrains Mono'; font-weight:700; color:var(--green);">40%</span>
+              </div>
+              <input type="range" id="poe-sim-rest" min="0" max="100" value="40" class="form-range" oninput="calculateInteractivePoE()" />
+            </div>
+          </div>
+
+          <!-- Resultados Calculados -->
+          <div style="background: rgba(0,0,0,0.3); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 11px; text-transform: uppercase; color: var(--text3); letter-spacing: 0.1em; font-weight: 700; margin-bottom: 6px;">
+                EcoScore Resultante (S_i)
+              </div>
+              <div id="poe-sim-ecoscore" style="font-size: 38px; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--green); margin-bottom: 8px;">
+                2.904
+              </div>
+              <div id="poe-sim-status" class="badge-ok" style="display: inline-block; padding: 6px 12px; font-size: 11px; border-radius: 6px; margin-bottom: 16px;">
+                🛡️ NÓ APTO AO CONSENSO — EcoScore Positivo
+              </div>
+
+              <div style="border-top: 1px solid var(--border); padding-top: 14px;">
+                <div style="font-size: 11px; color: var(--text3); margin-bottom: 4px;">Peso Ponderado na Eleição VRF:</div>
+                <div id="poe-sim-weight" style="font-family:'JetBrains Mono'; font-size: 16px; font-weight: 700; color: var(--teal);">
+                  892 (S_i^0,85 ponderado)
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 16px; font-size: 11.5px; color: var(--text2); line-height: 1.5; background: rgba(255,255,255,0.03); padding: 12px; border-radius: var(--radius-sm);">
+              💡 <b>Nota de Protocolo:</b> No PoE, os blocos não são minerados por quem queima mais energia, mas assinados pelo nó guardião sorteado pelo algoritmo VRF ponderado pelo EcoScore. Se a integridade for comprometida, o nó perde sua vez.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela de Nós Guardiões da Rede Federada BioChain -->
+      <div class="card" style="background: var(--surface2); border: 1px solid var(--border); padding: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--teal);">
+            🌐 Nós Guardiões Ativos na Federação de Biomas
+          </h3>
+          <span style="font-size: 11px; color: var(--text3); font-family: 'JetBrains Mono', monospace;">
+            Mecanismo Anti-Sybil: Limite de 25% por entidade
+          </span>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table class="audit-table">
+            <thead>
+              <tr>
+                <th>Nó Guardião</th>
+                <th>Área Custodiada (ha)</th>
+                <th>IIE Auditado</th>
+                <th>Multiplicador Ω</th>
+                <th>Restauração Ativa</th>
+                <th>EcoScore (S_i)</th>
+                <th>Peso Consenso (Teto 25%)</th>
+                <th>Status Operacional</th>
+              </tr>
+            </thead>
+            <tbody id="poe-nodes-tbody">
+              <!-- Renderizado dinamicamente via renderPoENodesTable() -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+
 
   <!-- ═══════════════════ DRAWER DA BIOWALLET ═══════════════════ -->
   <div id="wallet-drawer" class="wallet-drawer" role="region" aria-label="Painel da BioWallet Drex">
